@@ -11,9 +11,9 @@
 
 \begin{document}
 
-\title{Implementing A Particle Collision Model: \\ \large A Report for CS 6491 Fall 2015 Project 2}
-\author{Dingtian Zhang}
-\date{Sep 10, 2015}
+\title{CS6491-2015 P2: Swirl}
+\author{Dingtian Zhang, Clement Julliard}
+\date{Sep 18, 2015}
 \maketitle
 \begin{figure} [H]
     \centering
@@ -34,10 +34,34 @@
 %----------------------------------------------------------------------------------
 \section{Objective}
 
-To simulate the precise motion of a large number of balls in a cube in computer graphics. 
+We want to compute the mathematical formulation and the implementation of Steady Interpolating Similarity $SIS(F_a,t,F_b)$. and validate our solution by starting with user controlled frames $F_0$ and $F_1$, by extrapolating a steady pattern of frames $F_i$ such that the transformation $T$ between $F_i$ and $F_{i+1}$ is independent of $i$, and by showing (visually) that $F_i = SIS(F_0,i/k,F_k)$ for all $i$.
 
-\section{Input}
-We are given the intial prositions and velocities of $n$ balls. We have the following assumptions: All balls are in the cube, have the same radius and mass, and are pairwise disjoint. Balls starts in constant velocity motion. All collisions are elastic.
+
+\section{Definitions of Entities}
+
+
+A 3D frame $\{I,J,K,O\}$ is a similarity frame if all its factors have the same magnitude, if each is orthogonal to the other two, and if $(I \times J) \cdot K>0$.\\
+\\
+A Similarity Motion is an similarity frame $F(t)$ parameterize by time.\\
+\\
+The Steady Interpolating Similarity $SIS(F_a,t,F_b)$ is a Similarity Motion, such that:
+\begin{itemize}
+\item SIS(Fa,0,Fb)= Fa,
+\item SIS(Fa,1,Fb)= Fb,
+\item And the similarity transformation from SIS(Fa,t,Fb) to SIS(Fa,t+u,Fb) is independent of t,
+\end{itemize}
+
+\begin{figure}[h]
+  \centering
+  (a)\includegraphics[width=0.46\textwidth]{plant}
+  \caption{(a) Swirl in nature}
+  \label{fig:time}
+\end{figure}
+
+Figure 1 shows some of the 3D swirls in nature and man-made structures.
+
+\section{Approach}
+
 
 
 \section{Implementation}
@@ -139,29 +163,29 @@ our claim that the updating complexity is $O(n)$, because, with increasing
 \nbs, the number of collisions per frame increases. Therefore, the work
 needed to update collision information in each frame is super linear. 
 
-\begin{figure}[h]
-  \centering
-  (a)\includegraphics[width=0.46\textwidth]{nbsTime}
-  (b)\includegraphics[width=0.46\textwidth]{nbs3Time}
-  \caption{$t_{01}$, $t_{12}$, $t_{23}$ and $t_{34}$ with respect to \nbs 
-    (a) and the number of balls (b) respectively.}
-  \label{fig:time}
-\end{figure}
+%\begin{figure}[h]
+%  \centering
+%  (a)\includegraphics[width=0.46\textwidth]{nbsTime}
+%  (b)\includegraphics[width=0.46\textwidth]{nbs3Time}
+%  \caption{$t_{01}$, $t_{12}$, $t_{23}$ and $t_{34}$ with respect to \nbs 
+%    (a) and the number of balls (b) respectively.}
+%  \label{fig:time}
+%\end{figure}
 
 
 \subsection{Number of collisions per frame}
-\begin{figure}[h]
-  \centering
-  (a)\includegraphics[width=0.46\textwidth]{collision}
-  (a)\includegraphics[width=0.46\textwidth]{analytic}
-  \caption{
-    (a) Averaged number of collisions per frame for different \nbs.
-    (b) number of collision per frame vs $\nbs^4$. The blue curve is
-    experimental result. Red dashed line is the analytical relation
-    formula \eqref{eq:2} : $ y = 0.00486 \, x$.
-  }
-  \label{fig:collision}
-\end{figure}
+%\begin{figure}[h]
+%  \centering
+%  (a)\includegraphics[width=0.46\textwidth]{collision}
+%  (a)\includegraphics[width=0.46\textwidth]{analytic}
+%  \caption{
+%    (a) Averaged number of collisions per frame for different \nbs.
+%    (b) number of collision per frame vs $\nbs^4$. The blue curve is
+%    experimental result. Red dashed line is the analytical relation
+%    formula \eqref{eq:2} : $ y = 0.00486 \, x$.
+%  }
+%  \label{fig:collision}
+%\end{figure}
 First, we give a analytical formula for this 
 relation. First, the average free flight time is estimated as 
 \begin{equation}
