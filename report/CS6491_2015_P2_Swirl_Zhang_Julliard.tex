@@ -91,6 +91,11 @@ P(t) = F + m^t FP_0^o(t\alpha, N) + d^t N
 
 \subsection{Computing $N$}
 
+For computing the $N$ from $F_0$ and $F_1$, suppose we are given the input of the coordinates $(I_0, J_0, K_0)$ and $(I_1, J_1, K_1)$ and assume the angular velocity around the axis is constant, we can derive $N$ as
+\begin{equation}
+N = \frac{\Delta I \times \Delta J + \Delta J \times \Delta K + \Delta I \times \Delta K}{3}
+\end{equation}
+where $\Delta I = I_1 - I_0$, $\Delta J = J_1 - J_0$, $\Delta K = K_1 - K_0$.
 
 \subsection{Computing $F$}
 
