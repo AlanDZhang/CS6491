@@ -5,6 +5,7 @@
 \usepackage{algorithmic}
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage{hyperref}
 
 \graphicspath{ {../data/} }
 \newcommand{\nbs}{\texttt{nbs}}
@@ -86,19 +87,52 @@ P(t) = F + m^t FP_0^o(t\alpha, N) + d^t N
 
 \section{Implementation}
 
-\subsection{Computing $F_i$ from $F_0$ and $F_1$ in 3D}
-
 
 \subsection{Computing $N$}
 
-For computing the $N$ from $F_0$ and $F_1$, suppose we are given the input of the coordinates $(I_0, J_0, K_0)$ and $(I_1, J_1, K_1)$ and assume the angular velocity around the axis is constant, we can derive $N$ as
+For computing the $N$ from $F_0$ and $F_1$, suppose we are given the input of triangle $ABC$ and $DEF$, where $I_0 = AB, J_0 = AC, K_0 = I_0 \times J_0, I_1 = DE, J_1 = DF, K_1 =  I_1 \times J_1$, we can derive $N$ as
 \begin{equation}
 N = \frac{\Delta I \times \Delta J + \Delta J \times \Delta K + \Delta I \times \Delta K}{3}
 \end{equation}
 where $\Delta I = I_1 - I_0$, $\Delta J = J_1 - J_0$, $\Delta K = K_1 - K_0$.
 
 \subsection{Computing $F$}
+For computing the $F$ from $F_0$ and $F_1$, suppose we are given the input the same as above, we get
+\begin{equation}
+A = F + FA
+\end{equation}
+\begin{equation}
+D = F + FA^o (t\alpha, N) m^t + d^t N
+\end{equation}
+Therefore we can derive $F$ by
+\begin{equation}
+A^o (t\alpha, N) m^t + d^t N - D = F^o (t\alpha, N) m^t - F
+\end{equation}
+where
+\begin{equation}
+d^t = FD \cdot N - FA \cdot N 
+\end{equation}
+\begin{equation}
+m^t = \frac{FD - (FD \cdot N) N }{FA - (FA \cdot N) N}
+\end{equation}
+And rotating an arbitary point around an axis can be done by (\cite{murray13}): 
 
+(1) Translate space so that the rotation axis passes through the origin.
+
+(2) Rotate space about the z axis so that the rotation axis lies in the xz plane.
+
+(3) Rotate space about the y axis so that the rotation axis lies along the z axis.
+
+(4) Perform the desired rotation by θ about the z axis.
+
+(5) Apply the inverse of step (3).
+
+(6) Apply the inverse of step (2).
+
+(7) Apply the inverse of step (1).
+
+\subsection{Computing $F_i$ from $F_0$ and $F_1$ in 3D}
+If we know $F$, $F_0$, and $F_1$, we know the swirl motion description $P(t) = F + m^t FP_0^o(t\alpha, N) + d^t N$, so we can interpolate each frame simply by changing $t$ to $2t$, $3t$, $\ldots$, $kt$.
 
 \section{Analysis}
 
@@ -108,7 +142,13 @@ where $\Delta I = I_1 - I_0$, $\Delta J = J_1 - J_0$, $\Delta K = K_1 - K_0$.
 
 
 
-%\bibliographystyle{plain}
-%\bibliography{temp,externalPapers,groupPapers}
+\bibliographystyle{plain}
+\bibliography{temp,externalPapers,groupPapers}
+\begin{thebibliography}{9}
+\bibitem{murray13}
+  Glenn Murray,
+  \emph{Rotation About an Arbitrary Axis in 3 Dimensions},
+  \url{http://inside.mines.edu/fs_home/gmurray/ArbitraryAxisRotation/}.
 
+\end{thebibliography}
 \end{document}
