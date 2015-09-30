@@ -96,7 +96,7 @@ P(t) = F + m^t FP_0^o(t\alpha, N) + d^t N
 
 \subsection{Computing $N$}
 
-For computing the $N$ from similarity frames $F_0(O_0,I_0,J_0,K_0)$ and $F_1(O_1,I_1,J_1,K_1)$, we can derive $N$ as
+For computing the $N$ from $F_0$ and $F_1$, suppose we are given the input of triangle $ABC$ and $DEF$, where $I_0 = AB, K_0 = AB \times AC, J_0 = K_0 \times I_0, I_1 = DE, K_1 =  DE \times DF, J_1 = K_1 \times I_1$, we can derive $N$ as
 \begin{equation}
 N = \frac{\Delta I \times \Delta J + \Delta J \times \Delta K + \Delta K \times \Delta I}{3}
 \end{equation}
