@@ -69,7 +69,13 @@ Screw motion is the combination of rotation and translation. Assume the rotation
 \begin{equation}
 P(t) = F + FP_0^o(t\alpha) + dtN
 \end{equation}
-\#FIND ART\#
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.46\textwidth]{screw}
+  \caption{Art of Screw}
+
+\end{figure}
 
 \subsection{Spiral Motion}
 Spiral motion is the combination of rotation and scaling. One common spiral motion is log spiral. Assume the the rotation is around axis $(F, N)$, initial point $P_0$, unit time rotation angle $\alpha$, scaling factor is exponential of $m$, we can describe the log spiral motion as:
@@ -79,8 +85,8 @@ P(t) = F + m^t FP_0^o(t\alpha)
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.46\textwidth]{log_spiral}
-  \caption{Logarithmic spiral}
+  \includegraphics[width=0.46\textwidth]{spiral}
+  \caption{Art of Spiral}
 
 \end{figure}
 
@@ -89,7 +95,12 @@ Swirl motion is the combination (``commutatie composition'') of log spiral motio
 \begin{equation}
 P(t) = F + m^t FP_0^o(t\alpha, N) + d^t N
 \end{equation}
-\#FIND ART\#
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.46\textwidth]{swirl}
+  \caption{Art of Swirl}
+
+\end{figure}
 
 \section{Implementation}
 
@@ -144,9 +155,7 @@ And rotating an arbitary point around an axis can be done by (\cite{murray13}):
 If we know $F$, $F_0$, and $F_1$, we know the swirl motion description $P(t) = F + m^t FP_0^o(t\alpha, N) + d^t N$, so we can interpolate each frame simply by changing $t$ to $2t$, $3t$, $\ldots$, $kt$.
 
 \section{Analysis}
-
-
-\section{Discussion}
+Our program has not been able to function correctly before the deadline. We merged Frame and Swirl into one program and implemented finding axis and the fixed point, but were not successful in animating it yet.
 
 
 

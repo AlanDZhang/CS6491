@@ -151,7 +151,7 @@ public void mouseDragged() {
 
 //**************************** text for name, title and help  ****************************
 String title ="6491 2015 P2: Steady Interpolating of Similarities in 2D", 
-       name ="Student: ??? ??????",
+       name ="Student: Dingtian Zhang",
        menu="?:(show/hide) help, a: animate, `:snap picture, ~:(start/stop) recording movie frames, Q:quit",
        guide="click and drag to edit, f:showFrames"; // help info
 
@@ -188,11 +188,14 @@ public FR F(FR F) {return F(F.I,F.J,F.K,F.O);}
 public FR F(FR F0, float t, FR F1) {
   float a = angle(F0.I,F1.I); 
   float s = n(F1.I)/n(F0.I);
-  pt G = swirlCenter(a,s,F0.O,F1.O); show(G,5);
-  
-  vec I = S(pow(s,t),R(F0.I,t*a));
-  pt O = P(G,pow(s,t),R(V(G,F0.O),t*a)); 
-  return F(I,O); 
+  vec N = swirlAxis(F0.I, F0.J, F0.K, F1.I, F1.J, F1.K);
+  pt G = spiralCenter3D(F0, F1);
+  vec unitX = projectedVec(N, F0.O, F0.I);
+  unitX = unitX.normalize();
+  vec unitY = N(N, unitX);
+  vec I = S(pow(s,t),R(F0.I,t*a,unitX, unitY));
+  pt O = P(G,pow(s,t),R(V(G,F0.O),t*a, unitX, unitY)); 
+  return F(I,J,O); 
   }
 
 public void showArrow(FR F) {F.showArrow();}
@@ -206,11 +209,11 @@ class FR {
   public vec of(vec V) {return W(V.x,I,V.y,J,V.z,K);}
   public pt of(pt P) {return P(O,W(P.x,I,P.y,J,P.z,K));}
   public FR of(FR F) {return F(of(F.I),of(F.J),of(F.K),of(F.O));}
-  public vec invertedOf(vec V) {return V(det2(V,J)/det2(I,J),det2(V,I)/det2(J,I));}
-  public pt invertedOf(pt P) {vec V = V(O,P); return P(det(V,J)/det(I,J),det(V,I)/det(J,I));}
+  public vec invertedOf(vec V) {return V(det2(V,I)/det2(I,J),det2(V,J)/det2(J,K),det2(V,K)/det2(K,I));}
+  public pt invertedOf(pt P) {vec V = V(O,P); return P(det2(V,J)/det2(I,J),det2(V,I)/det2(J,I));}
   public FR invertedOf(FR F) {return F(invertedOf(F.I),invertedOf(F.J), invertedOf(F.K), invertedOf(F.O));}
-  public FR showArrow() {show(O,4); arrow(O,I); return this;}
-  public FR showArrows() {show(O,4); arrow(O,I); arrow(O,J); return this; }
+  public FR showArrow() {show(O,4); arrow(O,I,1); return this;}
+  public FR showArrows() {show(O,4); arrow(O,I,1); arrow(O,J,1); return this; }
   }
 /******** Editor of an Animated Coons Patch
 
@@ -494,7 +497,7 @@ public void loadPts(String fn) {
 class vec { float x=0,y=0,z=0; 
    vec () {}; 
    vec (float px, float py, float pz) {x = px; y = py; z = pz;};
-//      vec (float px, float py) {x = px; y = py;};
+      vec (float px, float py) {x = px; y = py;};
    public vec set (float px, float py, float pz) {x = px; y = py; z = pz; return this;}; 
      public vec setTo(vec V) {x = V.x; y = V.y; z = V.z; return this;}; 
    public vec set (vec V) {x = V.x; y = V.y; z = V.z; return this;}; 
@@ -896,11 +899,11 @@ public pt PtOnSpiral(pt A, pt B, pt C, float t) {
   float a =spiralAngle(A,B,B,C); 
   float s =spiralScale(A,B,B,C);
   pt G = spiralCenter(a, s, A, B); 
-  return L(G,R(B,t*a,G),pow(s,t));
+  return L(G,pow(s,t),R(B,t*a,G));
   }
 
-public pt spiralPt(pt A, pt G, float s, float a) {return L(G,R(A,a,G),s);}  
-public pt spiralPt(pt A, pt G, float s, float a, float t) {return L(G,R(A,t*a,G),pow(s,t));} 
+public pt spiralPt(pt A, pt G, float s, float a) {return L(G,s,R(A,a,G));}  
+public pt spiralPt(pt A, pt G, float s, float a, float t) {return L(G,pow(s,t),R(A,t*a,G));} 
 public vec swirlAxis(vec I_0, vec J_0, vec K_0, vec I_1, vec J_1, vec K_1) {
 	vec delta_I = I_1.sub(I_0);
 	vec delta_J = J_1.sub(J_0);
@@ -909,9 +912,34 @@ public vec swirlAxis(vec I_0, vec J_0, vec K_0, vec I_1, vec J_1, vec K_1) {
 	ret.add(N(delta_I, delta_J));
 	ret.add(N(delta_J, delta_K));
 	ret.add(N(delta_K, delta_I));
-	return ret.div(3);
+	return ret.div(3).normalize();
 }
-public pt spiralCenter(pt A, pt B, pt C, pt D, pt E, pt F) { // computes center of spiral that takes A to C and B to D
+
+public vec projectedVec(vec N, pt O, vec vector) {
+	vec v = W(vector, M(W(dot(N, vector), N)));
+	return v;
+}
+
+
+public pt projectedCoord(vec N, pt O, vec unitX, vec OP) {
+	vec v = projectedVec(N, O, OP);
+	float x = dot(unitX, v);
+	float y = det2(unitX, v);
+	return new pt(x, y);
+}
+
+public pt spiralCenter3D(FR F0, FR F1) { 
+	vec N = swirlAxis(F0.I, F0.J, F0.K, F1.I, F1.J, F1.K);
+	vec unitX = projectedVec(N, F0.O, F0.I);
+	unitX = unitX.normalize();
+	pt O_0 = new pt(0,0);
+	pt P_0 = projectedCoord(N, F0.O, unitX, F0.I);
+	pt O_1 = projectedCoord(N, F0.O, unitX, V(F0.O, F1.O));
+	pt P_1 = projectedCoord(N, F0.O, unitX, W(V(F0.O, F1.O), F0.I));
+	return spiralCenter(O_0, P_0, O_1, P_1);
+  }
+
+public pt spiralCenter(pt A, pt B, pt C, pt D) { // computes center of spiral that takes A to C and B to D
 	float a = spiralAngle(A,B,C,D); 
 	  float z = spiralScale(A,B,C,D);
 	  return spiralCenter(a,z,A,C);
